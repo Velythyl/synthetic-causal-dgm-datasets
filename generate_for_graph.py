@@ -7,6 +7,7 @@ from tqdm import tqdm
 import networkx as nx
 
 from encoder.flow import FlowEncoder
+from encoder.transforms import make_scalar_transform
 
 
 @functools.lru_cache
@@ -131,11 +132,14 @@ def generate(num_samples, timesteps, G, links, unlinks, intervset, timestep_carr
     unlinks = {node_to_index(G)[k]: v for k, v in unlinks.items()}
     num_nodes = len(G.nodes())
 
-    flow_encoder = FlowEncoder(
-        input_features=num_nodes,
-        output_features=num_nodes,
-        transform_blocks=5
-    )
+    flow_encoder = make_scalar_transform(num_nodes, layers=3)
+    #flow_encoder = FlowEncoder(
+    #    input_features=num_nodes,
+    #    output_features=num_nodes,
+    #    transform_blocks=1,
+    #    layers=1,
+    #    sigmoid=True
+    #)
 
     ALL_INTERVENTIONS = [
         intervset.init(num_samples)]  # 1 is batch_size (here we are generating point-by-point, so it's 1

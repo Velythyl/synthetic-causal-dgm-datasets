@@ -8,6 +8,7 @@ from torch.distributions import Normal
 from torch.utils.data import Dataset
 
 from encoder.flow import FlowEncoder
+from encoder.transforms import make_scalar_transform
 from generate_for_graph import generate, node_to_index, roots
 from intervset import IntervSet, IntervTable
 
@@ -75,11 +76,12 @@ class AutomaticDataset(WSCRLDataset):
             n_parents = len(list(G.predecessors(node)))
 
             def make_link():
-                flow_encoder = FlowEncoder(
-                    input_features=n_parents,
-                    output_features=n_parents,
-                    transform_blocks=2  # todo maybe add blocks
-                )
+                #flow_encoder = FlowEncoder(
+                #    input_features=n_parents,
+                #    output_features=n_parents,
+                #    transform_blocks=2  # todo maybe add blocks
+                #)
+                flow_encoder = make_scalar_transform(n_parents, layers=3)
 
                 def descendant_link(parents):
                     flow = flow_encoder(parents[None])[0]
